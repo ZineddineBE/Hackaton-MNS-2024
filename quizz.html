@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style/global.css">
+  <link rel="stylesheet" href="./style/quizz.css">
+  <title>Quiz sur la Sécurité Informatique</title>
+  <script src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython.min.js"></script>
+</head>
+
+<body class="corps" onload="brython()">
+  <h1>Quiz sur la Sécurité Informatique</h1>
+  <div id="quiz-container">
+    <p id="instructions">Cliquez sur "Démarrer le Quiz" pour commencer.</p>
+    <button class="perso-button" id="start-button">Démarrer le Quiz</button>
+  </div>
+  <div id="correct-answers" class="correct-answers"></div>
+  <p id="indice" style="display: none;">Écoutez bien le temps que dure chaque son.</p>
+  <button class="perso-button" id="afficherIndice" style="display: none;">Afficher l'indice</button>
+<script>
+    function spark(event) {
+        let i = document.createElement('i');
+        i.style.left = (event.pageX) + 'px';
+        i.style.top = (event.pageY) + 'px';
+        i.style.scale = `${Math.random() * 2 + 1}`;
+        i.style.setProperty('--x', getRandomTransitionValue());
+        i.style.setProperty('--y', getRandomTransitionValue());
+    
+        document.body.appendChild(i);
+    
+        setTimeout(() => {
+            document.body.removeChild(i);
+        }, 2000)
+    }
+    
+    
+    function getRandomTransitionValue() {
+        return `${Math.random() * 100 - 100}px`
+    }
+    
+    document.addEventListener('mousemove', spark);
+</script>
+  <script type="text/python">
+    
+from browser import document, html, window
+
+# Questions du quiz
+questions = [
+    ["Quel est le principal rôle d'un antivirus ?",
+     "O : Accélérer la vitesse de votre ordinateur",
+     "P : Protéger votre ordinateur contre les logiciels malveillants",
+     "Q : Améliorer la qualité de vos vidéos en ligne",
+     "R : Organiser vos fichiers",
+     "P : Protéger votre ordinateur contre les logiciels malveillants"],
+
+    ["Qu'est-ce qu'un phishing ?",
+     "G : Une technique de pêche en haute mer",
+     "H : Une tentative d'obtenir des informations confidentielles en se faisant passer pour une personne ou une organisation de confiance",
+     "I : Un virus informatique qui endommage le matériel",
+     "J : Une méthode pour accélérer une connexion internet",
+     "H : Une tentative d'obtenir des informations confidentielles en se faisant passer pour une personne ou une organisation de confiance"],
+
+    ["Pourquoi est-il important de mettre à jour régulièrement son système d'exploitation ?",
+     "N : Pour avoir accès aux dernières fonctionnalités",
+     "O : Pour corriger les vulnérabilités de sécurité",
+     "P : Pour augmenter la taille de la mémoire vive",
+     "Q : Pour rendre l'ordinateur plus silencieux",
+     "O : Pour corriger les vulnérabilités de sécurité"],
+
+    ["Quel est le principal risque lié à l'utilisation de réseaux Wi-Fi publics non sécurisés ?",
+     "O : Une surchauffe de l'ordinateur",
+     "P : Une diminution de la vitesse de connexion",
+     "Q : L'interception de vos données par des tiers",
+     "R : Une panne de l'ordinateur",
+     "Q : L'interception de vos données par des tiers"],
+
+    ["Qu'est-ce que le chiffrement de César ?",
+     "T : Une méthode de compression de fichiers pour réduire leur taille",
+     "U : Une méthode de chiffrement par substitution qui décale chaque lettre d'un nombre fixe de places dans l'alphabet",
+     "V : Un algorithme de hachage utilisé pour vérifier l'intégrité des données",
+     "W : Une technique de cryptage asymétrique nécessitant une clé publique et une clé privée",
+     "U : Une méthode de chiffrement par substitution qui décale chaque lettre d'un nombre fixe de places dans l'alphabet"],
+
+    ["Quelle est la meilleure pratique pour protéger un mot de passe ?",
+     "C : Utiliser le même mot de passe pour tous ses comptes",
+     "D : Choisir un mot de passe court et facile à retenir",
+     "E : Utiliser une combinaison de lettres majuscules, minuscules, chiffres et caractères spéciaux",
+     "F : Écrire son mot de passe sur un post-it",
+     "E : Utiliser une combinaison de lettres majuscules, minuscules, chiffres et caractères spéciaux"]
+]
+
+def start_quiz(event):
+    container = document["quiz-container"]
+    answers_container = document["correct-answers"]
+    container.clear()
+    answers_container.clear()
+    current_index = 0
+    score = 0
+    correct_answers = []
+
+    def show_question():
+        nonlocal current_index, score
+
+        if current_index < len(questions):
+            question = questions[current_index]
+            options_list = html.UL()
+
+            for q in question[1:5]:
+                option = html.LI(q, Class="option", style={"cursor": "pointer"})
+
+                def validate_answer(event, value=q.split(":")[0].strip()):
+                    nonlocal current_index, score
+                    correct = question[5][0]
+
+                    if value.upper() == correct:
+                        score += 1
+                        correct_answers.append(correct)
+                        container <= html.P("-- VRAI --", Class="result")
+                    else:
+                        container <= html.P("-- FAUX --", Class="result")
+
+                    answers_container.text = "Lettres des réponses justes : " + ", ".join(correct_answers)
+                    current_index += 1
+                    container.clear()
+                    show_question()
+
+                option.bind("click", validate_answer)
+                options_list <= option
+
+            container <= html.DIV(
+                html.P(question[0], Class="question") + options_list
+            )
+
+        else:
+            container <= html.P(f"Vous avez répondu correctement à {score} question(s) sur {len(questions)}.")
+            if score >= 4:
+                container <= html.P("Bravo, vous avez répondu à au moins 4 questions correctement !")
+                container <= html.INPUT(type="password", id="password-input", placeholder="Entrez un mot de passe", Class="password-input")
+                container <= html.BUTTON("Valider", id="validate-password", Class="perso-button")
+
+                def validate_password(event):
+                    password = document["password-input"].value
+                    if password == "phoque":
+                        container.clear()
+                        container <= html.P("Mot de passe correct. Redirection en cours...", Class="result")
+                        window.location.href = "page_morse.html"
+                    else:
+                        container <= html.P("Mot de passe incorrect. Essayez encore.", Class="error")
+
+                document["validate-password"].bind("click", validate_password)
+            else:
+                container <= html.BUTTON("Recommencer le Quiz", id="restart-button", Class="perso-button")
+
+                def restart_quiz(event):
+                    start_quiz(None)
+
+                document["restart-button"].bind("click", restart_quiz)
+
+    show_question()
+
+# Lier le bouton start-button
+document["start-button"].bind("click", start_quiz)
+  </script>
+</body>
+
+</html>
+

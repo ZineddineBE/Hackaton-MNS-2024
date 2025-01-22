@@ -1,0 +1,83 @@
+.bg-fond {
+  background-image: url("../icons/Group.svg");
+  background-size: 40%;
+  background-position: 85%;
+  background-repeat: no-repeat;
+  font-family: "Roboto", serif;
+    
+}
+body{
+  background: linear-gradient(180deg, rgba(49,62,116,1) 0%, rgba(23,30,59,1) 100%);
+  height: 100vh;
+}
+h1 {
+    color: #ec6834;
+    text-align: center;
+}
+h2 {
+    color: #ec6834;
+}
+
+button {
+    background-color: #ec6834;
+}
+
+img {
+    width: 50%;
+    border-radius: 10px;
+}
+
+img:hover {
+    border: 2px solid #ec6834;
+}
+i {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background:  #ec6834;
+  pointer-events: none;
+  animation: animate 2s linear forwards;
+}
+@keyframes animate {
+  0% {
+      opacity: 1;
+      transform: translate(0, 0);
+  }
+
+  100% {
+      opacity: 0;
+      transform: translate(var(--x), var(--y));
+  }
+}
+
+#afficherIndice {
+    display: none;
+    background-color: #545250e3;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    top: 12%;
+    left: 5%;
+    
+  }
+    p {
+        color: #fff;
+    }
+  #indice {
+    display: none;
+  text-align: center;
+  }
+
+  #afficherIndice {
+    background-color: #f57c00;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+  }
